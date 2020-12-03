@@ -17,7 +17,7 @@ def query(path1, path2=None, path3=None):
     path = '/'.join([p for p in (path1, path2, path3) if p])
 
     try:
-        user = users.User.get_current_user(req)
+        user = users.User.get_query_user(req)
 
         if not user:
             raise LookupError('User not found')

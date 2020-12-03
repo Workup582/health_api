@@ -1,3 +1,4 @@
+import uuid
 import time
 import jwt
 from chalice import Blueprint, Response
@@ -52,7 +53,7 @@ def login(backend=None):
     else:
         token = jwt.encode({'username': username}, config.SECRET, algorithm='HS256').decode('ascii')
 
-    return {'success': True, 'token': token, 'req_count': user.req_count}
+    return {'success': True, 'token': token, 'req_count': user.req_count, 'api_key': user.api_key}
 
 
 @account_blueprint.route('/account/login/{backend_name}', methods=['GET'])
@@ -96,4 +97,44 @@ def register():
 
 @account_blueprint.route('/account/me', methods=['GET'])
 def user_account():
-    return users.User.get_current_user(account_blueprint.current_request)
+    user = users.User.get_current_user(account_blueprint.current_request)
+
+    return user.to_dict()
+
+
+@account_blueprint.route('/account/me', methods=['PUT'])
+def update_user():
+    user = users.User.get_current_user(account_blueprint.current_request)
+
+    if not user:
+        return Response(status_code=404,
+                        body={
+                            'success': False,
+                            'message': 'User not found'
+                        })
+
+    payload = account_blueprint.current_request.json_body.copy()
+
+    user.first_name = payload['first_name']
+    user.last_name = payload['last_name']
+    user.update()
+
+    return user.to_dict()
+
+
+@account_blueprint.route('/account/me/regenerate_api_key', methods=['PUT'])
+def regenerate_api_key():
+    user = users.User.get_current_user(account_blueprint.current_request)
+
+    if not user:
+        return Response(status_code=404,
+                        body={
+                            'success': False,
+                            'message': 'User not found'
+                        })
+
+    user.api_key = uuid.uuid4().hex
+    user.req_count = config.MAX_REQUESTS
+    user.update()
+
+    return user.to_dict()

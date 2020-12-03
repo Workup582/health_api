@@ -120,7 +120,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
 
     <script src="{{ static_url }}/js/site.js"></script>
-
+{% raw %}
     <script id="template-login" type="text/template">
       <div class="row gap-y">
         <div class="col-md-6 offset-md-3">
@@ -239,13 +239,45 @@
       </div>
     </script>
 
-    <script id="template-builder" type="text/template>
+    <script id="template-profile" type="text/template>
       <div class="row gap-y">
         <div class="col-md-6 offset-md-3">
-          Profile
+          <div class="card px-6 py-6 shadow-11 hover-shadow-6 text-default border profile">
+            <h2 class="text-center">My profile</h2>
+
+            <div class="form">
+              <div class="form-group">
+                <label>Email</label>
+                <input class="form-control profile-email" type="text" disabled placeholder="Email" value="{{ profile.email }}" />
+              </div>
+
+              <div class="form-group">
+                <label>First name</label>
+                <input class="form-control profile-first-name" type="text" placeholder="First Name" value="{{ profile.first_name }}" />
+              </div>
+
+              <div class="form-group">
+                <label>Last name</label>
+                <input class="form-control profile-last-name" type="text" placeholder="Last Name" value="{{ profile.last_name }}" />
+              </div>
+
+              <button type="button" class="btn btn-primary btn-update-profile">Save</button>
+
+              <hr/>
+
+              <div class="form-group {{#unless profile.req_count}}text-warning{{/unless}}">
+                <label>API key (requests remains: <b>{{ profile.req_count }})</label>
+                <input class="form-control profile-api-key" type="text" disabled placeholder="API key" value="{{ profile.api_key }}" />
+              </div>
+
+              <button type="button" class="btn {{#if profile.req_count}}btn-primary{{else}}btn-warning{{/if}} btn-update-api-key">Regenerate</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </script>
+{% endraw %}
 
     <!-- must be the last -->
     <script type="text/javascript">

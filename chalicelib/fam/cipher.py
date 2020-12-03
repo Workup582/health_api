@@ -29,3 +29,11 @@ def get_current_username(req):
     token = jwt.decode(token[1], config.SECRET, algorithm='HS256')
 
     return token['username']
+
+
+def get_query_token(req):
+    token = req.headers['Authorization'].split(' ')
+    if token[0] != 'Query':
+        raise ValueError('Authorization method invalid')
+
+    return token[1]

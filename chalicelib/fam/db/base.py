@@ -100,7 +100,7 @@ class DynamoModel:
         update_expression = []
         update_values = {}
 
-        fields = {**self.to_dict(), **kwargs}
+        fields = {**self.to_dict(update=True), **kwargs}
 
         for index, (field, value) in enumerate(fields.items()):
             update_expression.append(f'{field}=:_{field}')

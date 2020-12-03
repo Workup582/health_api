@@ -5,7 +5,8 @@ function init(apiBaseUrl) {
 
   const templatesCache = {};
 
-  const getToken = () => Cookies.get(COOKIE_NAME);
+  let token = null;
+  let queryToken = null;
 
   const getTemplate = (templateId) => {
     if (!templatesCache[templateId]) {
@@ -55,6 +56,8 @@ function init(apiBaseUrl) {
     btnQuery: ".btn-query",
     btnRegister: ".card.register .btn-register",
     btnLogin: ".card.login .btn-login",
+    btnProfile: ".card.profile .btn-update-profile",
+    btnRegenerateApiKey: ".card.profile .btn-update-api-key",
 
     queryEndpoint: ".card.builder .endpoint",
     queryPayload: ".card.builder .payload",
@@ -67,6 +70,9 @@ function init(apiBaseUrl) {
 
     loginUsername: ".card.login .username",
     loginPassword: ".card.login .password",
+
+    profileFirstName: ".card.profile .profile-first-name",
+    profileLastName: ".card.profile .profile-last-name",
 
     loader: ".loader"
   };
@@ -85,7 +91,10 @@ function init(apiBaseUrl) {
   };
 
   // NOTE: IDK why but without timeout `navigate` sometimes doesn't work
-  const go = (route) => setTimeout(() => router.navigate(route), 100);
+  const go = (route) => {
+    console.log("Navigating to ", route);
+    setTimeout(() => router.navigate(route), 100);
+  };
 
   const updateControlsVisibility = (page) => {
     switch (page) {
@@ -144,7 +153,7 @@ function init(apiBaseUrl) {
       const opts = {
         url: apiBaseUrl + "/query/" + endpoint,
         method,
-        headers: { Authorization: `Bearer ${getToken()}` }
+        headers: { Authorization: `Query ${queryToken}` }
       };
 
       if (method !== "GET") {
@@ -166,9 +175,8 @@ function init(apiBaseUrl) {
           $(controls.queryResult).html(JSON.stringify(response.content, null, 2));
         })
         .fail((xhr, err, status) => {
-          console.error("Registration error:", err, status);
+          console.error("Query error:", err, status);
           $.toast({ text: `Unable to process your request`, icon: "error" });
-          handlers.logout();
         })
         .always(() => loading(false));
     },
@@ -219,19 +227,19 @@ function init(apiBaseUrl) {
         data: JSON.stringify({ username, password })
       })
         .done((response) => {
-          token = response.token;
-          queryToken = response.query_token;
+          authToken = response.token;
+          queryAuthToken = response.api_key;
           reqCount = response.req_count;
 
-          if (!token) {
+          if (!authToken) {
             console.error("Success but no token:", response);
             $.toast({ text: `Username or password incorrect`, icon: "error" });
           }
 
           if (reqCount > 0) {
-            Cookies.set(COOKIE_NAME, token);
+            token = authToken;
+            queryToken = queryAuthToken;
             $.toast({ text: `You successfully logged in, have ${reqCount} more API requests`, icon: "success" });
-            getToken();
           } else {
             $.toast({
               text: `You successfully logged in but consumed all available API requests count!`,
@@ -245,6 +253,82 @@ function init(apiBaseUrl) {
           console.error("Login error:", err);
           Cookies.remove(COOKIE_NAME);
           $.toast({ text: `Username or password incorrect`, icon: "error" });
+        })
+        .always(() => loading(false));
+    },
+
+    handleLoadProfile: async () => {
+      return new Promise((resolve, reject) => {
+        loading(true);
+
+        $.ajax({
+          url: apiBaseUrl + "/account/me",
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .done(resolve)
+          .fail((xhr, err, status) => {
+            console.error("Load profile error:", err);
+            $.toast({ text: `Unable to load user profile`, icon: "error" });
+
+            reject();
+          })
+          .always(() => loading(false));
+      });
+    },
+
+    handleRegenerateApiKey: async () => {
+      return new Promise((resolve, reject) => {
+        loading(true);
+
+        $.ajax({
+          url: apiBaseUrl + "/account/me/regenerate_api_key",
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .done((profile) => {
+            queryToken = profile.api_key;
+
+            $.toast({
+              text: `API key successfully update, request count allowed: ${profile.req_count}`,
+              icon: "success"
+            });
+            renderPage("profile", { profile });
+          })
+          .fail((xhr, err, status) => {
+            console.error("Regenerate api key error:", err);
+            $.toast({ text: `Unable to regenerate API key`, icon: "error" });
+            reject();
+          })
+          .always(() => loading(false));
+      });
+    },
+
+    handleUpdateProfile: () => {
+      loading(true);
+
+      const payload = {
+        first_name: $(controls.profileFirstName).val(),
+        last_name: $(controls.profileLastName).val()
+      };
+
+      $.ajax({
+        url: apiBaseUrl + "/account/me",
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(payload)
+      })
+        .done((profile) => {
+          $.toast({
+            text: `Your profile successfully updated`,
+            icon: "success"
+          });
+          renderPage("profile", { profile });
+        })
+        .fail((xhr, err, status) => {
+          console.error("Profile update error:", err);
+          $.toast({ text: `Unable to update profile`, icon: "error" });
         })
         .always(() => loading(false));
     }
@@ -262,6 +346,12 @@ function init(apiBaseUrl) {
     })
     .on("click", controls.btnLogin, () => {
       handlers.handleLogin();
+    })
+    .on("click", controls.btnRegenerateApiKey, () => {
+      handlers.handleRegenerateApiKey();
+    })
+    .on("click", controls.btnProfile, () => {
+      handlers.handleUpdateProfile();
     });
 
   router
@@ -286,7 +376,7 @@ function init(apiBaseUrl) {
       },
       {
         before: function (done, params) {
-          if (!getToken()) {
+          if (!token || !queryToken) {
             go("/login");
             return done(false);
           }
@@ -301,12 +391,12 @@ function init(apiBaseUrl) {
     .on(
       "/profile",
       function () {
-        renderPage("profile");
+        handlers.handleLoadProfile().then((profile) => renderPage("profile", { profile }));
         updateControlsVisibility("profile");
       },
       {
         before: function (done, params) {
-          if (!getToken()) {
+          if (!token) {
             go("/login");
             return done(false);
           }
@@ -319,7 +409,7 @@ function init(apiBaseUrl) {
 
   router
     .on(() => {
-      if (!getToken()) {
+      if (!token) {
         hide(controls.navBtnLogout, controls.navBtnProfile);
         go("/login");
         return;

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+BUCKET=fam-medica-assets-2
+AWS_PROFILE=${AWS_PROFILE:-default}
+
+aws --profile $AWS_PROFILE s3 mb s3://$BUCKET
+
+aws --profile $AWS_PROFILE s3 cp --recursive --include "*.js" --include ".css" --exclude "*.map" assets/ s3://$BUCKET
+
+KEYS=('fonts/fontawesome-webfont.woff' 'fonts/fontawesome-webfont.eot' 'fonts/FontAwesome.otf' 'fonts/fontawesome-webfont.ttf' 'fonts/themify.ttf' 'fonts/themify.svg' 'fonts/fontawesome-webfont.svg' 'fonts/fontawesome-webfont.woff2' 'fonts/themify.woff' 'fonts/themify.eot' 'css/site.css' 'css/page.min.css' 'img/logo-dark.png' 'img/apple-touch-icon.png' 'img/favicon.png' 'img/logo-light.png' 'js/site.js' 'js/page.min.js' )
+
+for key in "${KEYS[@]}"
+do
+    echo Making publicly readable $BUCKET/$key...
+    aws --profile $AWS_PROFILE s3api put-object-acl --bucket $BUCKET --key ${key} --acl public-read
+done
+
+BUCKET_URL=https://$BUCKET.s3.amazonaws.com
+
+echo AWS S3 bucket URL: $BUCKET_URL, files URLs:
+
+for key in "${KEYS[@]}"
+do
+    echo $key: $BUCKET_URL/$key
+done

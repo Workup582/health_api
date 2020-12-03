@@ -1,0 +1,23 @@
+{
+  "resources": [
+    {
+      "name": "api_handler_role",
+      "resource_type": "iam_role",
+      "role_arn": "arn:aws:iam::048090653778:role/fam-medica-dev-api_handler",
+      "role_name": "fam-medica-dev-api_handler"
+    },
+    {
+      "name": "api_handler",
+      "resource_type": "lambda_function",
+      "lambda_arn": "arn:aws:lambda:us-east-2:048090653778:function:fam-medica-dev"
+    },
+    {
+      "name": "rest_api",
+      "resource_type": "rest_api",
+      "rest_api_id": "5avlmrt677",
+      "rest_api_url": "https://5avlmrt677.execute-api.us-east-2.amazonaws.com/fam/"
+    }
+  ],
+  "schema_version": "2.0",
+  "backend": "api"
+}

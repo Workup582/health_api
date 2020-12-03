@@ -1,0 +1,6 @@
+import os
+
+TABLE_USER = os.environ['USERS_TABLE_NAME']
+TABLE_SOCIAL_AUTH = os.environ['SOCIAL_AUTH_TABLE_NAME']
+
+TABLE_ERRORS = os.getenv('ERRORS_TABLE_NAME')

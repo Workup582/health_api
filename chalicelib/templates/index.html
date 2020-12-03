@@ -49,7 +49,7 @@
           </li>`
 
           <li class="nav-item header-link-register" style="display: none">`
-          <a class="nav-link" href="#">Register</a>`
+          <a class="nav-link" href="#!/register">Register</a>`
           </li>`
         -->
             <li class="nav-item header-link-builder" style="display: none">
@@ -58,8 +58,9 @@
           </ul>
         </section>
 
+        <a class="nav-link header-link-profile btn-profile" style="display: none" href="#!/profile">Profile</a>
+        <a class="nav-link header-link-query btn-profile" style="display: none" href="#!/query">Query</a>
         <a class="nav-link header-link-logout btn-logout" style="display: none" href="#">Logout</a>
-        <a class="nav-link header-link-profile btn-profile" style="display: none" href="#">Profile</a>
       </div>
     </nav>
     <!-- /.navbar -->
@@ -126,21 +127,17 @@
           <div
             class="container-login card px-6 py-6 shadow-11 hover-shadow-6 text-default border login"
           >
-            <!--<h2 class="text-center">Login</h2>-->
-
             <div class="form">
               <div class="form-group">
-                <!--<label>Email</label>-->
                 <input class="form-control username" type="text" placeholder="Email address" />
               </div>
 
               <div class="form-group">
-                <!--<label>Password</label>-->
                 <input class="form-control password" type="password" placeholder="Password" />
               </div>
 
               <button type="button" class="btn btn-primary btn-login">Login</button>
-              <a class="btn-show-register" href="#" style="margin-left: 10px">Sign up</a>
+              <a class="btn-show-register" href="#!/register" style="margin-left: 10px">Sign up</a>
               <div class="social social-login pull-right">
                 <a
                   id="google-oauth2-button"
@@ -171,31 +168,25 @@
           <div
             class="container-register card px-6 py-6 shadow-11 hover-shadow-6 text-default border register"
           >
-            <!--<h2 class="text-center">Signup?</h2>-->
-
             <div class="form">
               <div class="form-group">
-                <!--<label>Email</label>-->
                 <input class="form-control username" type="text" placeholder="Email address" />
               </div>
 
               <div class="form-group">
-                <!--<label>Password</label>-->
                 <input class="form-control password" type="password" placeholder="Password" />
               </div>
 
               <div class="form-group">
-                <!--<label>First name</label>-->
                 <input class="form-control firstname" type="text" placeholder="First Name" />
               </div>
 
               <div class="form-group">
-                <!--<label>Last name</label>-->
                 <input class="form-control lastname" type="text" placeholder="Last Name" />
               </div>
 
               <button type="button" class="btn btn-primary btn-register">Sign up</button>
-              <a class="btn-show-login" href="#" style="margin-left: 10px">Login</a>
+              <a class="btn-show-login" href="#!/login" style="margin-left: 10px">Login</a>
             </div>
           </div>
         </div>
@@ -213,12 +204,9 @@
                 <label>Endpoit to call</label>
                 <select class="form-control endpoint">
                   <option disabled value="">Please select endpoint ...</option>
-                  <!--<option value="GET|info">Get database information</option>-->
                   <option value="POST|diagnosis">Query diagnostic engine</option>
                   <option value="POST|explain">Query diagnostic engine for explanation</option>
-                  <option value="POST|suggest">
-                    Suggests possible symptoms based on provided patient information.
-                  </option>
+                  <option value="POST|suggest">Suggests possible symptoms based on provided patient information.</option>
                   <option value="POST|triage">Query diagnostic engine for triage level</option>
                   <option value="GET|search">Find observations matching given phrase</option>
                   <option value="POST|parse">Find mentions of observations in given text</option>
@@ -236,8 +224,6 @@
 
               <div class="form-group">
                 <label>Payload to send to endpoint</label>
-                <!--<label>Example: </label>-->
-                <!--<img class="example" src="{{ static_url }}/img/ex_diag.png" alt="logo">-->
                 <textarea class="form-control form-control-sm payload"></textarea>
               </div>
 

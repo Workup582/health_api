@@ -1,10 +1,7 @@
 function init(apiBaseUrl) {
   const COOKIE_NAME = "fam_auth_2_0_0";
 
-  const root = null;
-  const useHash = true;
-  const hash = "#!";
-  const router = new Navigo(root, useHash, hash);
+  const router = new Navigo(null, true, "#!");
 
   const templatesCache = {};
 
@@ -40,7 +37,7 @@ function init(apiBaseUrl) {
     const parent = document.getElementById(parentElement);
     const content = renderTemplate(name, context);
 
-    console.log(`Rendering page ${name} in element`, parent);
+    console.log(`Rendering page ${name}`);
 
     parent.innerHTML = content;
   };
@@ -48,6 +45,9 @@ function init(apiBaseUrl) {
   const controls = {
     navBtnLogout: ".header-link-logout",
     navBtnProfile: ".header-link-profile",
+    navBtnQuery: ".header-link-query",
+    navBtnLogin: "",
+    navBtnRegister: "",
 
     btnShowRegister: ".card.login .btn-show-register",
     btnShowLogin: ".card.register btn-show-login",
@@ -74,26 +74,50 @@ function init(apiBaseUrl) {
   const loading = (isLoading) => (isLoading ? $(controls.loader).show() : $(controls.loader).hide());
   const hide = (...selectors) => selectors.forEach((selector) => $(selector).hide());
   const show = (...selectors) => selectors.forEach((selector) => $(selector).show());
+  const bold = (...selectors) => {
+    Object.values(controls).forEach((selector) => {
+      if (selectors.includes(selector)) {
+        $(selector).addClass("font-weight-bold");
+      } else {
+        $(selector).removeClass("font-weight-bold");
+      }
+    });
+  };
+
+  // NOTE: IDK why but without timeout `navigate` sometimes doesn't work
+  const go = (route) => setTimeout(() => router.navigate(route), 100);
+
+  const updateControlsVisibility = (page) => {
+    switch (page) {
+      case "login":
+        hide(controls.navBtnLogout, controls.navBtnProfile, controls.navBtnQuery);
+        show(controls.navBtnLogin, controls.navBtnRegister);
+        bold(controls.navBtnLogin);
+        break;
+      case "register":
+        hide(controls.navBtnLogout, controls.navBtnProfile, controls.navBtnQuery);
+        show(controls.navBtnLogin, controls.navBtnRegister);
+        bold(controls.navBtnRegister);
+        break;
+      case "query":
+        hide(controls.navBtnLogin, controls.navBtnRegister);
+        show(controls.navBtnLogout, controls.navBtnProfile, controls.navBtnQuery);
+        bold(controls.navBtnQuery);
+        break;
+      case "profile":
+        hide(controls.navBtnLogin, controls.navBtnRegister);
+        show(controls.navBtnLogout, controls.navBtnProfile, controls.navBtnQuery);
+        bold(controls.navBtnProfile);
+        break;
+      default:
+        console.error(`Unknown page passed to updateControlsVisibility: ${page}`);
+    }
+  };
 
   const handlers = {
     handleLogout: () => {
       Cookies.remove(COOKIE_NAME);
-      router.navigate("/login");
-    },
-
-    handleShowProfile: () => {
-      router.navigate("/profile");
-    },
-    handleShowRegister: () => {
-      router.navigate("/register");
-    },
-    handleShowLogin: () => {
-      router.navigate("/login");
-    },
-
-    logout: () => {
-      Cookies.remove(COOKIE_NAME);
-      router.navigate("/login");
+      go("/");
     },
 
     handleQuery: () => {
@@ -207,14 +231,15 @@ function init(apiBaseUrl) {
           if (reqCount > 0) {
             Cookies.set(COOKIE_NAME, token);
             $.toast({ text: `You successfully logged in, have ${reqCount} more API requests`, icon: "success" });
-            token = checkToken();
+            getToken();
           } else {
             $.toast({
               text: `You successfully logged in but consumed all available API requests count!`,
               icon: "warning"
             });
-            Cookies.remove(COOKIE_NAME);
           }
+
+          go("/query");
         })
         .fail((xhr, err, status) => {
           console.error("Login error:", err);
@@ -227,59 +252,84 @@ function init(apiBaseUrl) {
 
   $(document)
     .on("click", controls.navBtnLogout, () => {
-      console.log(">> click on navBtnLogout");
       handlers.handleLogout();
     })
-    .on("click", controls.navBtnProfile, () => {
-      console.log(">> click on navBtnProfile");
-      handlers.handleShowProfile();
-    })
     .on("click", controls.btnQuery, () => {
-      console.log(">> click on btnQuery");
       handlers.handleQuery();
     })
-    .on("click", controls.btnShowRegister, () => {
-      console.log(">> click on btnShowRegister");
-      handlers.handleShowRegister();
-    })
-    .on("click", controls.btnShowLogin, () => {
-      console.log(">> click on btnShowLogin");
-      handlers.handleShowLogin();
-    })
     .on("click", controls.btnRegister, () => {
-      console.log(">> click on btnRegister");
       handlers.handleRegister();
     })
     .on("click", controls.btnLogin, () => {
-      console.log(">> click on btnLogin");
       handlers.handleLogin();
     });
 
   router
     .on({
       "/login": function () {
-        console.log(">>> 1");
         renderPage("login");
+        updateControlsVisibility("login");
       },
       "/register": function () {
-        console.log(">>> 2");
         renderPage("register");
-      },
-      "/query": function () {
-        renderPage("builder");
-      },
-      "/profile": function () {
-        renderPage("profile");
-      },
-      "*": function () {
-        if (!getToken()) {
-          hide(controls.navBtnLogout, controls.navBtnProfile);
-          router.navigate("/login");
-          return;
-        }
-
-        router.navigate("/query");
+        updateControlsVisibility("register");
       }
     })
     .resolve();
+
+  router
+    .on(
+      "/query",
+      function () {
+        renderPage("builder");
+        updateControlsVisibility("query");
+      },
+      {
+        before: function (done, params) {
+          if (!getToken()) {
+            go("/login");
+            return done(false);
+          }
+
+          done();
+        }
+      }
+    )
+    .resolve();
+
+  router
+    .on(
+      "/profile",
+      function () {
+        renderPage("profile");
+        updateControlsVisibility("profile");
+      },
+      {
+        before: function (done, params) {
+          if (!getToken()) {
+            go("/login");
+            return done(false);
+          }
+
+          done();
+        }
+      }
+    )
+    .resolve();
+
+  router
+    .on(() => {
+      if (!getToken()) {
+        hide(controls.navBtnLogout, controls.navBtnProfile);
+        go("/login");
+        return;
+      }
+
+      go("/query");
+    })
+    .resolve();
+
+  router.resolve();
+
+  window.router = router;
 }

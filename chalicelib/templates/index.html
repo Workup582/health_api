@@ -269,8 +269,6 @@
                 <label>API key (requests remains: <b>{{ profile.req_count }})</label>
                 <input class="form-control profile-api-key" type="text" disabled placeholder="API key" value="{{ profile.api_key }}" />
               </div>
-
-              <button type="button" class="btn {{#if profile.req_count}}btn-primary{{else}}btn-warning{{/if}} btn-update-api-key">Regenerate</button>
             </div>
           </div>
 
@@ -280,7 +278,7 @@
 {% endraw %}
 
     <!-- must be the last -->
-    <script type="text/javascript">
+    <script type="text/javascript" id="init_script">
       init({
         pregeneratedToken: "{{ token }}",
         pregeneratedQueryToken: "{{ api_key }}",

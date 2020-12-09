@@ -37,9 +37,6 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
   const renderPage = (name, context = {}, parentElement = "app") => {
     const parent = document.getElementById(parentElement);
     const content = renderTemplate(name, context);
-
-    console.log(`Rendering page ${name}`);
-
     parent.innerHTML = content;
   };
 
@@ -57,7 +54,6 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
     btnRegister: ".card.register .btn-register",
     btnLogin: ".card.login .btn-login",
     btnProfile: ".card.profile .btn-update-profile",
-    btnRegenerateApiKey: ".card.profile .btn-update-api-key",
 
     queryEndpoint: ".card.builder .endpoint",
     queryPayload: ".card.builder .payload",
@@ -92,7 +88,6 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
 
   // NOTE: IDK why but without timeout `navigate` sometimes doesn't work
   const go = (route) => {
-    console.log("Navigating to ", route);
     setTimeout(() => router.navigate(route), 100);
   };
 
@@ -277,33 +272,6 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
       });
     },
 
-    handleRegenerateApiKey: async () => {
-      return new Promise((resolve, reject) => {
-        loading(true);
-
-        $.ajax({
-          url: apiBaseUrl + "/account/me/regenerate_api_key",
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}` }
-        })
-          .done((profile) => {
-            queryToken = profile.api_key;
-
-            $.toast({
-              text: `API key successfully update, request count allowed: ${profile.req_count}`,
-              icon: "success"
-            });
-            renderPage("profile", { profile });
-          })
-          .fail((xhr, err, status) => {
-            console.error("Regenerate api key error:", err);
-            $.toast({ text: `Unable to regenerate API key`, icon: "error" });
-            reject();
-          })
-          .always(() => loading(false));
-      });
-    },
-
     handleUpdateProfile: () => {
       loading(true);
 
@@ -347,9 +315,6 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
     .on("click", controls.btnLogin, () => {
       handlers.handleLogin();
     })
-    .on("click", controls.btnRegenerateApiKey, () => {
-      handlers.handleRegenerateApiKey();
-    })
     .on("click", controls.btnProfile, () => {
       handlers.handleUpdateProfile();
     });
@@ -358,6 +323,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
     router.pause();
 
     history.replaceState(null, "Medera", "/#!/query");
+    document.getElementById("init_script").innerHTML = `throw new Error("Nope, it doesn't work this way!")`;
 
     router.resume();
   }

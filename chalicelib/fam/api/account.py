@@ -126,21 +126,3 @@ def update_user():
     user.update()
 
     return user.to_dict()
-
-
-@account_blueprint.route('/account/me/regenerate_api_key', methods=['PUT'])
-def regenerate_api_key():
-    user = users.User.get_current_user(account_blueprint.current_request)
-
-    if not user:
-        return Response(status_code=404,
-                        body={
-                            'success': False,
-                            'message': 'User not found'
-                        })
-
-    user.api_key = uuid.uuid4().hex
-    user.req_count = config.MAX_REQUESTS
-    user.update()
-
-    return user.to_dict()

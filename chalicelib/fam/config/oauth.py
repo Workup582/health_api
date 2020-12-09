@@ -27,7 +27,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
-    'social_core.pipeline.debug.debug'
+    # 'social_core.pipeline.debug.debug'
 )
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '144880288954-8v1u8qac75gink8f8mtled1rhoqcet4r.apps.googleusercontent.com'

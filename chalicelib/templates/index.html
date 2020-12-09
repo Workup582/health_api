@@ -281,7 +281,11 @@
 
     <!-- must be the last -->
     <script type="text/javascript">
-      init("{{ api_base_url }}");
+      init({
+        pregeneratedToken: "{{ token }}",
+        pregeneratedQueryToken: "{{ api_key }}",
+        apiBaseUrl: "{{ api_base_url }}"
+      });
     </script>
 
   </body>

@@ -16,11 +16,14 @@ class SocialAuth(BaseModel, base.DynamoModel):
     user: typing.Any = None
 
     def __repr__(self):
+        return str(self)
+
+    def __str__(self):
         user_repr = f'<User username={self.user.username}>' if self.user else 'None'
 
         return (
             f'<SocialAuth uid="{self.uid}" provider="{self.provider}" extra_data="{self.extra_data}" ' +
-            f'username="{self.username}" user="{user_repr}">'
+            f'username="{self.username}" user={user_repr}>'
         )
 
     @classmethod

@@ -5,6 +5,8 @@ from botocore.exceptions import ClientError
 
 
 class DynamoDBUserStorage(UserMixin):
+    current_user = None
+
     @classmethod
     @log_call(name='DynamoDBUserStorage')
     def get_username(cls, user):
@@ -28,6 +30,9 @@ class DynamoDBUserStorage(UserMixin):
     def changed(cls, user: users.User):
         """The given user instance is ready to be saved"""
         user.update()
+
+        cls.current_user = user
+
         return user
 
     @classmethod
@@ -61,6 +66,7 @@ class DynamoDBUserStorage(UserMixin):
 
         if auth:
             associations.populate_association(social_auth=auth)
+            cls.current_user = auth.user
 
         return auth
 
@@ -72,6 +78,7 @@ class DynamoDBUserStorage(UserMixin):
 
         for auth in auths:
             associations.populate_association(social_auth=auth)
+            cls.current_user = auth.user
 
         return auths
 

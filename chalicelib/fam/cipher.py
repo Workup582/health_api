@@ -1,3 +1,4 @@
+import time
 import hashlib
 import binascii
 import os
@@ -37,3 +38,13 @@ def get_query_token(req):
         raise ValueError('Authorization method invalid')
 
     return token[1]
+
+
+def issue_token(username: str) -> str:
+    if config.TOKEN_EXPIRATION_SEC:
+        expired_at = int(time.time()) + config.TOKEN_EXPIRATION_SEC
+        token = jwt.encode({'username': username, 'exp': expired_at}, config.SECRET, algorithm='HS256').decode('ascii')
+    else:
+        token = jwt.encode({'username': username}, config.SECRET, algorithm='HS256').decode('ascii')
+
+    return token

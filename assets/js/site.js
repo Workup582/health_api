@@ -1,12 +1,12 @@
-function init(apiBaseUrl) {
+function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
   const COOKIE_NAME = "fam_auth_2_0_0";
 
   const router = new Navigo(null, true, "#!");
 
   const templatesCache = {};
 
-  let token = null;
-  let queryToken = null;
+  let token = pregeneratedToken;
+  let queryToken = pregeneratedQueryToken;
 
   const getTemplate = (templateId) => {
     if (!templatesCache[templateId]) {
@@ -354,6 +354,14 @@ function init(apiBaseUrl) {
       handlers.handleUpdateProfile();
     });
 
+  if (pregeneratedToken && pregeneratedQueryToken) {
+    router.pause();
+
+    history.replaceState(null, "Medera", "/#!/query");
+
+    router.resume();
+  }
+
   router
     .on({
       "/login": function () {
@@ -420,6 +428,4 @@ function init(apiBaseUrl) {
     .resolve();
 
   router.resolve();
-
-  window.router = router;
 }

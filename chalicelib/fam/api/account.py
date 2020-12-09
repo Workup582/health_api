@@ -1,14 +1,13 @@
 import uuid
-import time
-import jwt
 from chalice import Blueprint, Response
 
+from chalicelib.fam.template import render_to_response
 from chalicelib.fam import config
 from chalicelib.fam.db import users
-from chalicelib.fam.cipher import verify_password
+from chalicelib.fam.cipher import verify_password, issue_token
 from chalicelib.fam.common.logger import log_call
 
-from social_core.actions import do_auth, do_complete, do_disconnect
+from social_core.actions import do_auth, do_complete
 
 from chalicelib.fam.oauth.utils import psa
 
@@ -23,9 +22,15 @@ def do_login(backend, user, social_user):
     #            request.form.get(name) or \
     #            False
     # return login_user(user, remember=remember)
-    print('>> do_login backend', backend)
-    print('>> do_login user', user)
-    print('>> do_login social_user', social_user)
+
+    user.is_authenticated = True
+
+    if not user.social_user:
+        user.social_user = social_user
+
+    account_blueprint.current_request.user = user
+
+    return user
 
 
 @account_blueprint.route('/account/login', methods=['POST'])
@@ -47,11 +52,7 @@ def login(backend=None):
     if not password_matched:
         return Response(status_code=403, body={'success': False, 'message': 'Password or phone/email incorrect'})
 
-    if config.TOKEN_EXPIRATION_SEC:
-        expired_at = int(time.time()) + config.TOKEN_EXPIRATION_SEC
-        token = jwt.encode({'username': username, 'exp': expired_at}, config.SECRET, algorithm='HS256').decode('ascii')
-    else:
-        token = jwt.encode({'username': username}, config.SECRET, algorithm='HS256').decode('ascii')
+    token = issue_token(username)
 
     return {'success': True, 'token': token, 'req_count': user.req_count, 'api_key': user.api_key}
 
@@ -61,7 +62,7 @@ def login(backend=None):
 @log_call(name='OAuth login init')
 def login_oauth(backend_name):
     backend = account_blueprint.current_request.backend
-    return do_auth(backend, 'http://127.0.0.1:5000/account/oaut-complete')
+    return do_auth(backend)
 
 
 @account_blueprint.route('/account/oauth/complete/{backend_name}', name='oauth.complete')
@@ -69,10 +70,15 @@ def login_oauth(backend_name):
 @log_call(name='OAuth login complete')
 def login_oauth_complete(backend_name, *args, **kwargs):
     backend = account_blueprint.current_request.backend
-    user = account_blueprint.current_request.user
-    result = do_complete(backend, login=do_login, user=user, *args, **kwargs)
+    temp_anonymous_user = account_blueprint.current_request.user
 
-    print('>>>> do_complete result:', result)
+    do_complete(backend, login=do_login, user=temp_anonymous_user, *args, **kwargs)
+
+    user = account_blueprint.current_request.user
+
+    token = issue_token(user.username)
+
+    return render_to_response('index', {'token': token, 'api_key': user.api_key})
 
 
 @account_blueprint.route('/account/register', methods=['POST'])

@@ -23,19 +23,6 @@ def test_ddb():
 # Do not use on prod!
 @root_blueprint.route('/assets/{directory}/{filename}', methods=['GET'])
 def assets(directory, filename):
-    # print('--- Request info start ---')
-    # req = root_blueprint.current_request
-    # print('--- req.context: ', req.context)
-    # print('--- req.headers: ', req.headers)
-    # print('--- req.json_body: ', req.json_body)
-    # print('--- req.lambda_context: ', req.lambda_context)
-    # print('--- req.method: ', req.method)
-    # print('--- req.path: ', req.path)
-    # print('--- req.query_params: ', req.query_params)
-    # print('--- req.uri_params: ', req.uri_params)
-    # print('--- req.to_dict(): ', req.to_dict())
-    # print('--- Request info end ---')
-
     headers = {'Content-Type': 'text/plain'}
 
     try:

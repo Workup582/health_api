@@ -13,7 +13,17 @@ table = aws.get_dynamo_table(tables.TABLE_USER)
 SOCIAL_PASSWORD = '!'
 
 
-class User(BaseModel, base.DynamoModel):
+class AnonymousUser:
+    is_authenticated: bool = False
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        return '<AnonymousUser>'
+
+
+class User(BaseModel, AnonymousUser, base.DynamoModel):
     username: str
     email: str
     password: str = None
@@ -26,14 +36,18 @@ class User(BaseModel, base.DynamoModel):
 
     social_user: typing.Any = None
     is_new: bool = True
+    is_authenticated: bool = False
 
     def __repr__(self):
+        return str(self)
+
+    def __str__(self):
         social_repr = f'<SocialUser uid="{self.social_user.uid}">'if self.social_user else 'None'
         return (
             f'<User username="{self.username}" email="{self.email}" password="{self.password}" ' +
             f'cleartext_password="{self.cleartext_password}" first_name="{self.first_name}" ' +
             f'last_name="{self.last_name}" req_count="{self.req_count}" is_active="{self.is_active}" ' +
-            f'is_new="{self.is_new}" social_user="{social_repr}">'
+            f'is_new="{self.is_new}" social_user={social_repr}>'
         )
 
     @classmethod

@@ -1,12 +1,9 @@
 import jinja2
 from chalice import Response
 
-from chalicelib.fam import config
+from chalicelib.fam.config import templates
 
-STATIC_URL = 'http://localhost:8000/assets' if config.ENV == 'development' else 'https://fam-medica-assets-2.s3.amazonaws.com'
-TEMPLATES_DIR = 'chalicelib/templates/'
-
-env = jinja2.Environment(loader=jinja2.FileSystemLoader([TEMPLATES_DIR]),
+env = jinja2.Environment(loader=jinja2.FileSystemLoader([templates.TEMPLATES_DIR]),
                          autoescape=jinja2.select_autoescape(['html', 'xml']))
 
 
@@ -14,7 +11,7 @@ def render(template_name, context):
     if not context:
         context = {}
 
-    context['static_url'] = STATIC_URL
+    context['static_url'] = templates.STATIC_URL
 
     template_file = f'{template_name}.html'
     return env.get_template(template_file).render(context)

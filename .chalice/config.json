@@ -23,7 +23,7 @@
         "MED_SERVICE_APP_ID": "4d4ed946",
         "MED_SERVICE_APP_KEY": "853288331a854f57aba33b0c1466a9071eae1110efeb43d1916bffde191324d",
         "ENV": "staging",
-        "BASE_URL": "https://iqq1rufge1.execute-api.us-west-1.amazonaws.com/fam/"
+        "BASE_URL": "https://1whq78g94e.execute-api.us-east-1.amazonaws.com/fam/"
       }
     },
     "production": {

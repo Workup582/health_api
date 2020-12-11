@@ -7,17 +7,13 @@ import argparse
 
 import boto3
 
-USER_UUID = False
+USE_UUID = False
 
-TABLES = {
-    'users': {
-        'prefix': 'users',
-        'env_var': 'USERS_TABLE_NAME',
+TABLES_KEYS = {
+    'USERS_TABLE_NAME': {
         'hash_key': 'username'
     },
-    'social_auth': {
-        'prefix': 'social-auth',
-        'env_var': 'SOCIAL_AUTH_TABLE_NAME',
+    'SOCIAL_AUTH_TABLE_NAME': {
         'hash_key': 'uid',
         'range_key': 'provider'
     }
@@ -25,7 +21,7 @@ TABLES = {
 
 
 def create_table(table_name_prefix, hash_key, range_key=None):
-    table_name = f'{table_name_prefix}-{str(uuid.uuid4())}' if USER_UUID else table_name_prefix
+    table_name = f'{table_name_prefix}-{str(uuid.uuid4())}' if USE_UUID else table_name_prefix
     print(f'Creating table {table_name}')
     client = boto3.client('dynamodb', region_name=os.environ['AWS_REGION'])
     key_schema = [{
@@ -65,10 +61,22 @@ def main():
     parser.add_argument('-s', '--stage', default='dev')
     args = parser.parse_args()
 
-    for table in TABLES:
-        table_config = TABLES[table]
-        table_name = create_table(table_config['prefix'], table_config['hash_key'], table_config.get('range_key'))
-        record_as_env_var(table_config['env_var'], table_name, args.stage)
+    config = {}
+    current_env = {}
+    tables = {}
+
+    with open(os.path.join('.chalice', 'config.json')) as f:
+        config = json.load(f)
+        current_env = config['stages'][args.stage]
+        tables = {
+            key: value
+            for key, value in current_env['environment_variables'].items()
+            if key.endswith('_TABLE_NAME')
+        }
+
+    for table_env_var, table_name in tables.items():
+        tabke_key_config = TABLES_KEYS[table_env_var]
+        create_table(table_name, tabke_key_config['hash_key'], tabke_key_config.get('range_key'))
 
 
 if __name__ == '__main__':

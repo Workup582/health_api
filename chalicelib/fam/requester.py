@@ -9,8 +9,8 @@ def prepare_headers(headers=None):
     else:
         headers = headers.copy()
 
-    headers['App-Id'] = config.APP_ID
-    headers['App-Key'] = config.APP_KEY
+    headers['App-Id'] = config.MED_SERVICE_APP_ID
+    headers['App-Key'] = config.MED_SERVICE_APP_KEY
 
     return headers
 

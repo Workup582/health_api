@@ -8,9 +8,22 @@
       "environment_variables": {
         "USERS_TABLE_NAME": "dev-users",
         "SOCIAL_AUTH_TABLE_NAME": "dev-social-auth",
-        "APP_ID": "4d4ed946",
-        "APP_KEY": "853288331a854f57aba33b0c1466a9071eae1110efeb43d1916bffde191324d",
-        "ENV": "development"
+        "MED_SERVICE_APP_ID": "4d4ed946",
+        "MED_SERVICE_APP_KEY": "853288331a854f57aba33b0c1466a9071eae1110efeb43d1916bffde191324d",
+        "ENV": "development",
+        "BASE_URL": "http://localhost:8000"
+      }
+    },
+    "staging": {
+      "autogen_policy": false,
+      "api_gateway_stage": "fam",
+      "environment_variables": {
+        "USERS_TABLE_NAME": "staging-users",
+        "SOCIAL_AUTH_TABLE_NAME": "staging-social-auth",
+        "MED_SERVICE_APP_ID": "4d4ed946",
+        "MED_SERVICE_APP_KEY": "853288331a854f57aba33b0c1466a9071eae1110efeb43d1916bffde191324d",
+        "ENV": "staging",
+        "BASE_URL": "https://iqq1rufge1.execute-api.us-west-1.amazonaws.com/fam/"
       }
     },
     "production": {
@@ -19,9 +32,10 @@
       "environment_variables": {
         "USERS_TABLE_NAME": "users",
         "SOCIAL_AUTH_TABLE_NAME": "social-auth",
-        "APP_ID": "4d4ed946",
-        "APP_KEY": "853288331a854f57aba33b0c1466a9071eae1110efeb43d1916bffde191324d",
-        "ENV": "production"
+        "MED_SERVICE_APP_ID": "4d4ed946",
+        "MED_SERVICE_APP_KEY": "853288331a854f57aba33b0c1466a9071eae1110efeb43d1916bffde191324d",
+        "ENV": "production",
+        "BASE_URL": "http://localhost:8000"
       }
     }
   }

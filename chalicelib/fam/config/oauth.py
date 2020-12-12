@@ -1,3 +1,5 @@
+import os
+
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/auth/logged-in/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/auth/login-error/'
 SOCIAL_AUTH_LOGIN_URL = '/auth/login-url/'
@@ -30,11 +32,11 @@ SOCIAL_AUTH_PIPELINE = (
     # 'social_core.pipeline.debug.debug'
 )
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '144880288954-8v1u8qac75gink8f8mtled1rhoqcet4r.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'TKSpcMe_3RoLLNNfDic447ho'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET')
 
-SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = '86j75o0p2o8ots'
-SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = 'JeKDjugiZKbxRr5P'
+SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = os.getenv('LINKEDIN_OAUTH2_KEY')
+SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = os.getenv('LINKEDIN_OAUTH2_SECRET')
 SOCIAL_AUTH_LINKEDIN_OAUTH2_EXTRA_DATA = [('id', 'id'), ('firstName', 'first_name'), ('lastName', 'last_name'),
                                           ('emailAddress', 'email_address')]
 SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = ['r_liteprofile', 'r_emailaddress']

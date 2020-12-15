@@ -15,7 +15,7 @@ def index():
     return render_to_response('index', {  })
 
 
-@root_blueprint.route('/x/test-ddb')
+# @root_blueprint.route('/x/test-ddb')
 def test_ddb():
     return {
         'users table': users.table.name if users.table else None,
@@ -23,7 +23,7 @@ def test_ddb():
         'errors table': errors.table.name if errors.table else None
     }
 
-@root_blueprint.route('/x/test-ddb-get')
+# @root_blueprint.route('/x/test-ddb-get')
 def test_ddb_get():
     qs = root_blueprint.current_request.query_params
 
@@ -37,7 +37,7 @@ def test_ddb_get():
     return 'No username'
 
 
-@root_blueprint.route('/x/test-cfg')
+# @root_blueprint.route('/x/test-cfg')
 def test_cfg():
     return {
         'config': {

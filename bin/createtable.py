@@ -16,6 +16,9 @@ TABLES_KEYS = {
     'SOCIAL_AUTH_TABLE_NAME': {
         'hash_key': 'uid',
         'range_key': 'provider'
+    },
+    'ERRORS_TABLE_NAME': {
+        'hash_key': 'uid'
     }
 }
 

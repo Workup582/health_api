@@ -7,21 +7,21 @@
 # Deployment
 
 - install virtual environment: `pip install virtualenvwrapper`
-- create virtuen environment: `mkvirtualenv fam-medica`. If default Python Os version is 2.x please specify Python of
-    version 3 like `mkvirtualenv -p /usr/bin/python3.6`
+- create virtuen environment: `mkvirtualenv fam-medica`. If default Python Os version is 2.x please specify Python of version 3 like `mkvirtualenv -p /usr/bin/python3.6`
 - activate virtualenv (if not activated automatically): `workon fam-medica`
 - install app dependencies: `pip install -r requirements.txt`
 - ensure that you have aws credential file `~/.aws/credentials` with content like:
-    ```
-    [default]
-    aws_access_key_id = XXXXXXXX
-    aws_secret_access_key = XXXXXXXXXXXXXXXXXXXXXXXX
-    ```
-    Corresponding ID and key can be creted in Security section on AWS Console
+  ```
+  [default]
+  aws_access_key_id = XXXXXXXX
+  aws_secret_access_key = XXXXXXXXXXXXXXXXXXXXXXXX
+  ```
+  Corresponding ID and key can be creted in Security section on AWS Console
 - create DynamoDB table for users: `python createtable.py`
 - deploy application to lambda: `chalice deploy`
 
 After deployment log information will be displayed like:
+
 ```
 Creating deployment package.
 Updating policy for IAM role: fam-medica-dev-api_handler
@@ -34,37 +34,48 @@ Resources deployed:
 
 Assume value from example log `https://ccy9mb5095.execute-api.us-east-1.amazonaws.com/api/` named below as `API_URL`.
 
-
 # UI deployment
 
-- Edit S3 bucket name for statis assets:
-    - Open `/bin/upload_assets` in your favourite editor
-    - Change line `BUCKET=fam-medica-assets` to `BUCKET=<YOUR_PREFERRED_BUCKET_NAME_HERE>`
+- export required env vars:
+  - `S3_BUCKET`
+  - `AWS_PROFILE`
 - Deploy static assets: `./bin/upload_assets`
-- Deploy entire code to Lambda
 
+S3 bucket requires some adjusting to allow get webfonts otherwise it return CORS error. On bucket's permission table edit "Cross-origin resource sharing" and add following policy:
+
+```
+[
+    {
+        "AllowedHeaders": [],
+        "AllowedMethods": [
+            "GET"
+        ],
+        "AllowedOrigins": [
+            "*"
+        ],
+        "ExposeHeaders": []
+    }
+]
+```
 
 # REST API
 
 - `API_URL/account/register`. Account creation endpoint. Expected payload:
-    ```
-    {"username": "aaa1@bbb.ccc", "password": "iddqd", "first_name": "Aaa", "last_name": "Bbb"}
-    ```
-    return value: `{success: true}`
+  ```
+  {"username": "aaa1@bbb.ccc", "password": "iddqd", "first_name": "Aaa", "last_name": "Bbb"}
+  ```
+  return value: `{success: true}`
 - `API_URL/account/login`. Login endpoint that grant user with authorization token. Expected payload:
-    ```
-    {"username": "aaa1@bbb.ccc", "password": "iddqd"}
-    ```
-    return value (if success): { success: true, token: 'SOME STRING' }
-- `API_URL/query/`. Main URL that proxifying requests to upstream provider. Here values from
-    query string (for GET requests), body (for POST requests) and URL translated according to provided dictionary
-    to send to upstream. Also this endpoint allows more then one URL. Accepted up to 3 additional URL parts i.e.:
-    - `API_URL/query/engdiag`
-    - `API_URL/query/engdiag/engtest`
-    - `API_URL/query/engdiag/engtest/engresult`
+  ```
+  {"username": "aaa1@bbb.ccc", "password": "iddqd"}
+  ```
+  return value (if success): { success: true, token: 'SOME STRING' }
+- `API_URL/query/`. Main URL that proxifying requests to upstream provider. Here values from query string (for GET requests), body (for POST requests) and URL translated according to provided dictionary to send to upstream. Also this endpoint allows more then one URL. Accepted up to 3 additional URL parts i.e.:
 
-    For now only `engdiag` URL part rewritten but other can be added to `mapper.py`.
+  - `API_URL/query/engdiag`
+  - `API_URL/query/engdiag/engtest`
+  - `API_URL/query/engdiag/engtest/engresult`
 
-    This endpoint protected and allowed only for logged on users i.e. who provides token. Token must be provided
-    in `Authorization` header like: `Authorization: Bearer HERE_TOKEN_GRANTED_AFTER_LOGIN`
-    One user account can send up to 30 requests, after that account will receive message `request limit exceeded`.
+  For now only `engdiag` URL part rewritten but other can be added to `mapper.py`.
+
+  This endpoint protected and allowed only for logged on users i.e. who provides token. Token must be provided in `Authorization` header like: `Authorization: Bearer HERE_TOKEN_GRANTED_AFTER_LOGIN` One user account can send up to 30 requests, after that account will receive message `request limit exceeded`.

@@ -1,11 +1,11 @@
 import os
 
 ENV = os.getenv('ENV')
-MED_SERVICE_APP_ID = os.getenv('c03d1c83')
-MED_SERVICE_APP_KEY = os.getenv('')
-BASE_URL = ""
+MED_SERVICE_APP_ID = os.getenv('MED_SERVICE_APP_ID')
+MED_SERVICE_APP_KEY = os.getenv('MED_SERVICE_APP_KEY')
+BASE_URL = os.getenv('BASE_URL')
 
-SECRET = '6c6f96239e7a4cb9bac5a6e1e933c99171e0f7975b994b9f8b0ab317fb34fadfa128aae58aa4403c8d06d334d75fb533'
+SECRET = os.getenv('APP_SECRET_KEY')
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')

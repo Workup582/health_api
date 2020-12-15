@@ -121,7 +121,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
   const handlers = {
     handleLogout: () => {
       Cookies.remove(COOKIE_NAME);
-      go("/");
+      location.reload();
     },
 
     handleQuery: () => {
@@ -322,7 +322,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
   if (pregeneratedToken && pregeneratedQueryToken) {
     router.pause();
 
-    history.replaceState(null, "Medera", "/#!/query");
+    history.replaceState(null, "Medera", "/fam/#!/query");
     document.getElementById("init_script").innerHTML = `throw new Error("Nope, it doesn't work this way!")`;
 
     router.resume();

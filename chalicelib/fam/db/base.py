@@ -1,4 +1,5 @@
 from boto3.dynamodb.conditions import Key
+import botocore.exceptions
 
 from .errors import put as log_error
 
@@ -91,10 +92,13 @@ class DynamoModel:
                 raise ValueError(f'Not found: {str(key)}: {str(obj)}')
 
             return [cls.to_model(**result) for result in results]
+
+        except ValueError as ex:
+            return []
         except Exception as ex:
             log_error(ex)
 
-        return None
+        return []
 
     def update(self, **kwargs):
         update_expression = []

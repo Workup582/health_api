@@ -74,7 +74,7 @@ class DynamoDBUserStorage(UserMixin):
     @log_call(name='DynamoDBUserStorage')
     def get_social_auth_for_user(cls, user: users.User):
         """Return all the UserSocialAuth instances for given user"""
-        auths = social_auth.SocialAuth.query(username=user.username)
+        auths = social_auth.SocialAuth.scan(username=user.username)
 
         for auth in auths:
             associations.populate_association(social_auth=auth)

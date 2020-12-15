@@ -1,6 +1,7 @@
 import jinja2
 from chalice import Response
 
+from chalicelib.fam import config
 from chalicelib.fam.config import templates
 
 env = jinja2.Environment(loader=jinja2.FileSystemLoader([templates.TEMPLATES_DIR]),
@@ -18,7 +19,8 @@ def render(template_name, context):
 
 
 def render_to_response(template_name, context, status_code=200, headers=None):
-    template = render(template_name, context)
+    default_context = { 'api_base_url': config.BASE_URL, **context }
+    template = render(template_name, default_context)
 
     if not headers:
         headers = {"Content-Type": "text/html", "Access-Control-Allow-Origin": "*"}

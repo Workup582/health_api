@@ -48,7 +48,7 @@ def query(path1, path2=None, path3=None):
                         })
 
     res = None
-    url = config.BASE_URL + mapper.translate_url(path)
+    url = config.MED_SERVICE_URL + mapper.translate_url(path)
 
     if req.method == 'POST':
         payload = req.json_body.copy()

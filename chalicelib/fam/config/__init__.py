@@ -3,6 +3,7 @@ import os
 ENV = os.getenv('ENV')
 MED_SERVICE_APP_ID = os.getenv('MED_SERVICE_APP_ID')
 MED_SERVICE_APP_KEY = os.getenv('MED_SERVICE_APP_KEY')
+MED_SERVICE_URL = os.getenv('MED_SERVICE_URL')
 BASE_URL = os.getenv('BASE_URL')
 
 SECRET = os.getenv('APP_SECRET_KEY')

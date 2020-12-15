@@ -28,6 +28,7 @@
         "ERRORS_TABLE_NAME": "staging-errors",
         "MED_SERVICE_APP_ID": "4d4ed946",
         "MED_SERVICE_APP_KEY": "853288331a854f57aba33b0c1466a9071eae1110efeb43d1916bffde191324d",
+        "MED_SERVICE_URL": "https://1whq78g94e.execute-api.us-east-1.amazonaws.com/fam/",
         "APP_SECRET_KEY": "a2e8b53fd1294b9c841af41f32d9566ed7355fba85cd427290e29c91a14b35a9ae1df7e1d341454595ac26c73837dace",
         "ENV": "staging",
         "BASE_URL": "https://1whq78g94e.execute-api.us-east-1.amazonaws.com/fam/",

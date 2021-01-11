@@ -4,6 +4,7 @@ from chalicelib.fam import config
 from chalicelib.fam.db import users
 from chalicelib.fam import mapper
 from chalicelib.fam import requester
+from chalicelib.fam.translate import get_language, translate_obj
 
 query_blueprint = Blueprint(__name__)
 
@@ -81,6 +82,14 @@ def query(path1, path2=None, path3=None):
     try:
         json = res.json()
         mapper.intelligent_response_converter(json, 'to')
+
+        language = get_language(req)
+
+        print(f'\n\nLanguage: {language}\n\n')
+
+        if language != 'en':
+            json = translate_obj(json, language)
+
         return {'success': True, 'content': json}
     except Exception as ex:
         print(f'Unable to decode JSON from response: ${res.content}:', ex)

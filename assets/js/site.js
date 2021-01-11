@@ -58,6 +58,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
     queryEndpoint: ".card.builder .endpoint",
     queryPayload: ".card.builder .payload",
     queryResult: ".card.builder .result",
+    queryLanguage: ".card.builder .language",
 
     registerUsername: ".card.register .username",
     registerPassword: ".card.register .password",
@@ -70,7 +71,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
     profileFirstName: ".card.profile .profile-first-name",
     profileLastName: ".card.profile .profile-last-name",
 
-    loader: ".loader"
+    loader: ".loader",
   };
 
   const loading = (isLoading) => (isLoading ? $(controls.loader).show() : $(controls.loader).hide());
@@ -126,6 +127,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
 
     handleQuery: () => {
       const [method, endpoint] = $(controls.queryEndpoint).val().split("|");
+      const language = $(controls.queryLanguage).val();
       let payload = $(controls.queryPayload).val() || "{}";
 
       $(controls.queryResult).html("");
@@ -140,15 +142,15 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
         $.toast({
           text: `Payload is not valida JSON object. Double quotes, commas and paired bramckets are important for validaty`,
           icon: "warning",
-          hideAfter: 7000
+          hideAfter: 7000,
         });
         return;
       }
 
       const opts = {
-        url: apiBaseUrl + "/query/" + endpoint,
+        url: apiBaseUrl + "/query/" + endpoint + (language ? `?language=${language}` : ""),
         method,
-        headers: { Authorization: `Query ${queryToken}` }
+        headers: { Authorization: `Query ${queryToken}` },
       };
 
       if (method !== "GET") {
@@ -188,13 +190,13 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
         url: apiBaseUrl + "/account/register",
         method: "POST",
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify({ username, password, first_name, last_name })
+        data: JSON.stringify({ username, password, first_name, last_name }),
       })
         .done((response) => {
           if (!response.success) {
             $.toast({
               text: `Unable to create account, some information missing or account already exists`,
-              icon: "error"
+              icon: "error",
             });
             return;
           }
@@ -219,7 +221,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
         url: apiBaseUrl + "/account/login",
         method: "POST",
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify({ username, password })
+        data: JSON.stringify({ username, password }),
       })
         .done((response) => {
           authToken = response.token;
@@ -238,7 +240,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
           } else {
             $.toast({
               text: `You successfully logged in but consumed all available API requests count!`,
-              icon: "warning"
+              icon: "warning",
             });
           }
 
@@ -259,7 +261,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
         $.ajax({
           url: apiBaseUrl + "/account/me",
           method: "GET",
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         })
           .done(resolve)
           .fail((xhr, err, status) => {
@@ -277,7 +279,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
 
       const payload = {
         first_name: $(controls.profileFirstName).val(),
-        last_name: $(controls.profileLastName).val()
+        last_name: $(controls.profileLastName).val(),
       };
 
       $.ajax({
@@ -285,12 +287,12 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(payload)
+        data: JSON.stringify(payload),
       })
         .done((profile) => {
           $.toast({
             text: `Your profile successfully updated`,
-            icon: "success"
+            icon: "success",
           });
           renderPage("profile", { profile });
         })
@@ -299,7 +301,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
           $.toast({ text: `Unable to update profile`, icon: "error" });
         })
         .always(() => loading(false));
-    }
+    },
   };
 
   $(document)
@@ -337,7 +339,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
       "/register": function () {
         renderPage("register");
         updateControlsVisibility("register");
-      }
+      },
     })
     .resolve();
 
@@ -356,7 +358,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
           }
 
           done();
-        }
+        },
       }
     )
     .resolve();
@@ -376,7 +378,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
           }
 
           done();
-        }
+        },
       }
     )
     .resolve();

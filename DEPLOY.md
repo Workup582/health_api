@@ -63,7 +63,7 @@ Full list if stages can be found in `.chalice/config.json` alongside with corres
 
 Deployment performed via call:
 ```
-chalice deploy -stage <STAGE_TO_DEPLOY>
+chalice deploy --stage <STAGE_TO_DEPLOY>
 ```
 
 Once deployment finished app url will be shown, so it is time to define post-login redirect URL for OAuth apps

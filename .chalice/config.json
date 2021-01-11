@@ -8,16 +8,16 @@
       "environment_variables": {
         "USERS_TABLE_NAME": "dev-users",
         "SOCIAL_AUTH_TABLE_NAME": "dev-social-auth",
-        "MED_SERVICE_APP_ID": "",
-        "MED_SERVICE_APP_KEY": "",
-        "MED_SERVICE_URL": "",
+        "MED_SERVICE_APP_KEY": "5a68a9f0326803f0a6cc25bee4e5a5ac",
+        "MED_SERVICE_APP_ID": "4d4ed946",
+        "MED_SERVICE_URL": "https://api.infermedica.com/v2/",
+        "GOOGLE_OAUTH2_KEY": "144880288954-hgeucdde3fp820lqo6bt8tg8h3qfme3u.apps.googleusercontent.com",
+        "GOOGLE_OAUTH2_SECRET": "IRYs7oxwTR617wNno92BR2yb",
+        "LINKEDIN_OAUTH2_KEY": "86j75o0p2o8ots",
+        "LINKEDIN_OAUTH2_SECRET": "JeKDjugiZKbxRr5P",
         "APP_SECRET_KEY": "6c6f96239e7a4cb9bac5a6e1e933c99171e0f7975b994b9f8b0ab317fb34fadfa128aae58aa4403c8d06d334d75fb533",
         "ENV": "development",
-        "BASE_URL": "http://localhost:8000",
-        "GOOGLE_OAUTH2_KEY": "SET_ME!",
-        "GOOGLE_OAUTH2_SECRET": "SET_ME!",
-        "LINKEDIN_OAUTH2_KEY": "SET_ME!",
-        "LINKEDIN_OAUTH2_SECRET": "SET_ME!"
+        "BASE_URL": "http://localhost:8000"
       }
     },
     "staging": {
@@ -27,9 +27,9 @@
         "USERS_TABLE_NAME": "staging-users",
         "SOCIAL_AUTH_TABLE_NAME": "staging-social-auth",
         "ERRORS_TABLE_NAME": "staging-errors",
-        "MED_SERVICE_APP_ID": "",
-        "MED_SERVICE_APP_KEY": "",
-        "MED_SERVICE_URL": "",
+        "MED_SERVICE_APP_ID": "4d4ed946",
+        "MED_SERVICE_APP_KEY": "5a68a9f0326803f0a6cc25bee4e5a5ac",
+        "MED_SERVICE_URL": "https://api.infermedica.com/v2/",
         "APP_SECRET_KEY": "a2e8b53fd1294b9c841af41f32d9566ed7355fba85cd427290e29c91a14b35a9ae1df7e1d341454595ac26c73837dace",
         "ENV": "staging",
         "BASE_URL": "https://1whq78g94e.execute-api.us-east-1.amazonaws.com/fam/",

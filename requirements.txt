@@ -33,5 +33,4 @@ setuptools-scm==5.0.1
 six==1.15.0
 social-auth-core==3.3.3
 traversy==0.1.32
-typing==3.7.4.3
 urllib3==1.26.2

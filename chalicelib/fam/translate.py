@@ -45,6 +45,8 @@ def translate_obj(obj, to_language):
 
         translated = translate_terms(translate_values, to_language, 'en')
 
+        print('Translated terms:', translated)
+
         translated_values = [x['translatedText'].capitalize()
                              for x in translated['data']['translations']]
 
@@ -52,8 +54,8 @@ def translate_obj(obj, to_language):
 
         for key, value in translations.items():
             obj[key] = value
-    except expression as identifier:
-        print(ex)
+    except Exception as ex:
+        print('Exception during translation:', ex)
 
     return obj.to_dict()
 

@@ -1,0 +1,23 @@
+{
+  "resources": [
+    {
+      "name": "api_handler_role",
+      "resource_type": "iam_role",
+      "role_arn": "arn:aws:iam::830156598404:role/fam-medica-production-api_handler",
+      "role_name": "fam-medica-production-api_handler"
+    },
+    {
+      "name": "api_handler",
+      "resource_type": "lambda_function",
+      "lambda_arn": "arn:aws:lambda:us-east-1:830156598404:function:fam-medica-production"
+    },
+    {
+      "name": "rest_api",
+      "resource_type": "rest_api",
+      "rest_api_id": "ezkngpnpib",
+      "rest_api_url": "https://ezkngpnpib.execute-api.us-east-1.amazonaws.com/fam/"
+    }
+  ],
+  "schema_version": "2.0",
+  "backend": "api"
+}

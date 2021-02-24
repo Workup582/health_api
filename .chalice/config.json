@@ -47,16 +47,17 @@
       "environment_variables": {
         "USERS_TABLE_NAME": "users",
         "SOCIAL_AUTH_TABLE_NAME": "social-auth",
-        "MED_SERVICE_APP_ID": "",
-        "MED_SERVICE_APP_KEY": "",
-        "MED_SERVICE_URL": "",
-        "APP_SECRET_KEY": "361e5ebaf0294f018861df5985db9db4824201097585439a94fe441c2d2354bba4597339fb3f4ea09e33fa648f19f222",
+        "ERRORS_TABLE_NAME": "errors",
+        "MED_SERVICE_APP_ID": "4d4ed946",
+        "MED_SERVICE_APP_KEY": "5a68a9f0326803f0a6cc25bee4e5a5ac",
+        "MED_SERVICE_URL": "https://api.infermedica.com/v2/",
+        "APP_SECRET_KEY": "4d88470c32a542b4aa135ace5651099dee2e8f211f664c8c9b1cc918f0c025ed96699061f788448398dace64e08498d6",
         "ENV": "production",
-        "BASE_URL": "http://localhost:8000",
-        "GOOGLE_OAUTH2_KEY": "SET_ME!",
-        "GOOGLE_OAUTH2_SECRET": "SET_ME!",
-        "LINKEDIN_OAUTH2_KEY": "SET_ME!",
-        "LINKEDIN_OAUTH2_SECRET": "SET_ME!",
+        "BASE_URL": "https://api.medera.ai",
+        "GOOGLE_OAUTH2_KEY": "!SET ME!",
+        "GOOGLE_OAUTH2_SECRET": "!SET ME!",
+        "LINKEDIN_OAUTH2_KEY": "!SET ME!",
+        "LINKEDIN_OAUTH2_SECRET": "!SET ME!",
         "GOOGLE_TRANSLATE_API_KEY": "AIzaSyDzfxJTJ_LzNy67j-HpW7udAlvXn17RcDU"
       }
     }

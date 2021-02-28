@@ -7,7 +7,7 @@ from social_core.backends.google import GoogleOAuth2
 
 from chalicelib.fam.oauth.strategy import ChaliceStrategy
 from chalicelib.fam.oauth.storage import DynamoDBStorage
-from chalicelib.fam.config import oauth, ENV
+from chalicelib.fam import config
 
 from chalicelib.fam.application import app
 
@@ -18,7 +18,7 @@ def psa(redirect_uri=None):
     def decorator(func):
         @wraps(func)
         def wrapper(backend_name, *args, **kwargs):
-            load_backends(oauth.SOCIAL_AUTH_AUTHENTICATION_BACKENDS)
+            load_backends(config.oauth.SOCIAL_AUTH_AUTHENTICATION_BACKENDS)
 
             storage = DynamoDBStorage()
             strategy = ChaliceStrategy(storage=storage)
@@ -28,9 +28,6 @@ def psa(redirect_uri=None):
                 raise BadRequestError(f'Unable to login user via {backend_name}')
 
             uri = redirect_uri.replace('{backend_name}', backend_name)
-
-            if ENV == 'staging' or ENV == 'production':
-                uri = '/fam' + uri
 
             app.current_request.strategy = strategy
             app.current_request.backend = Backend(strategy=strategy, redirect_uri=uri)

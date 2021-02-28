@@ -324,7 +324,7 @@ function init({ apiBaseUrl, pregeneratedToken, pregeneratedQueryToken }) {
   if (pregeneratedToken && pregeneratedQueryToken) {
     router.pause();
 
-    history.replaceState(null, "Medera", "/fam/#!/query");
+    history.replaceState(null, "Medera", "/#!/query");
     document.getElementById("init_script").innerHTML = `throw new Error("Nope, it doesn't work this way!")`;
 
     router.resume();
